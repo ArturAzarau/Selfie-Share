@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MultipeerConnectivity
 
 private let cellIdentifier = "ImageView"
 
@@ -15,6 +16,11 @@ class ViewController: UICollectionViewController {
     // MARK: - Properties
     
     private var images = [UIImage]()
+    
+    // For multipeer connectivity
+    private var peerID: MCPeerID!
+    private var mcSession: MCSession!
+    private var mcAdvertiserAssistant: MCAdvertiserAssistant!
     
     // MARK: - Actions
     
@@ -25,9 +31,32 @@ class ViewController: UICollectionViewController {
         present(picker, animated: true)
     }
     
+    @IBAction func showConnectionPrompt(_ sender: Any) {
+        let ac = UIAlertController(title: "Connect to others", message: nil, preferredStyle: .actionSheet)
+        ac.addAction(UIAlertAction(title: "Host a session", style: .default, handler: startHosting))
+        ac.addAction(UIAlertAction(title: "Join a session", style: .default, handler: joinSession))
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(ac, animated: true)
+    }
+    
     // MARK: - View life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        peerID = MCPeerID(displayName: UIDevice.current.name)
+        mcSession = MCSession(peer: peerID, securityIdentity: nil, encryptionPreference: .required)
+        mcSession.delegate = self
+    }
+    
+    // MARK: - Methods
+    private func startHosting(action: UIAlertAction) {
+        mcAdvertiserAssistant = MCAdvertiserAssistant(serviceType: "hws-project25", discoveryInfo: nil, session: mcSession)
+        mcAdvertiserAssistant.start()
+    }
+    
+    private func joinSession(action: UIAlertAction) {
+        let mcBrowser = MCBrowserViewController(serviceType: "hws-project25", session: mcSession)
+        mcBrowser.delegate = self
+        present(mcBrowser, animated: true)
     }
 }
 
@@ -54,4 +83,12 @@ extension ViewController {
         }
         return cell
     }
+}
+
+extension ViewController: MCSessionDelegate {
+    
+}
+
+extension ViewController: MCBrowserViewControllerDelegate {
+    
 }

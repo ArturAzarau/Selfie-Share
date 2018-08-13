@@ -51,6 +51,11 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" title="Selfie Share" id="bqY-MW-fsL">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="wBJ-4w-4Fm">
+                            <connections>
+                                <action selector="showConnectionPrompt:" destination="0aa-9c-9z2" id="6R0-5Y-ZHN"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="camera" id="Am7-6o-ESn">
                             <connections>
                                 <action selector="importPicture:" destination="0aa-9c-9z2" id="gMM-eA-CVJ"/>
